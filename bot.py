@@ -26,7 +26,7 @@ def main():
     while True:
         # lookup for tweets
         try:
-            tweets = ["test1", "test2", "test3"]
+            tweets = lookup()
             # update twitter's account status
             for tweet in tweets:
                 #check for errors
