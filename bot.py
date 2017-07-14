@@ -3,6 +3,7 @@
 
 # import modules
 import tweepy
+import time
 
 # import dependencies
 from config import *
@@ -24,10 +25,11 @@ def main():
         
         # update twitter's account status
         for tweet in tweets:
-            api.update_status(tweet)
+            try: api.update_status(tweet)
+            except tweepy.TweepError: print("ERROR: cannot get weather data")
         
         # delay next tweet for 3 hours
-        # time.sleep(10800000)
+        time.sleep(10800000)
 
 if __name__ == "__main__":
     main()
