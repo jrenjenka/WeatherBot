@@ -3,36 +3,28 @@
 
 # import modules
 import tweepy
-import time
 
 # import dependencies
 from config import *
 
 # authorize twitter app
 def init():
-    try:
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        return tweepy.API(auth)
-    except tweepy.TweepError:
-        raise RuntimeError("ERROR: cannot authorize the app") from None
     
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    return tweepy.API(auth)
+   
 def main():
-    try:
-        api = init()
-    except ValueError:
-        raise RuntimeError("ERROR: authorization failed") from None
+    api = init()
     
     while True:
         # lookup for tweets
-        try:
-            tweets = lookup()
-            # update twitter's account status
-            for tweet in tweets:
-                #check for errors
-                api.update_status(tweet)
-        except ValueError:
-            print("ERROR: cannot get weather data")
+        #tweets = lookup()
+        tweets = ["test4", "test5"]
+        
+        # update twitter's account status
+        for tweet in tweets:
+            api.update_status(tweet)
         
         # delay next tweet for 3 hours
         # time.sleep(10800000)
