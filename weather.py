@@ -1,16 +1,19 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import pyowm
 
 from config import WAPI_key
 
-city_id = 524901
-owm = pyowm.OWM(WAPI_key, language='ru')
-obs = owm.weather_at_id(city_id)
-
-w = obs.get_weather()
-
-print(w.get_temperature(unit='celsius'))
-print(w.get_status())
-print(w.get_detailed_status())
-
+class Weather():
+    """Implement Weather data parsing and lookup"""
+    
+    def __init__(self, WAPI_key):
+        """Initialize Weather class"""
+        self.api_key = WAPI_key
+        
+    def lookup(self):
+        return
+        
+    def data_parsing(self, response_json):
+        return 
+        
 
