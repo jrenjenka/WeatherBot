@@ -1,2 +1,3 @@
-pip3 install tweepy
-pip install requests
+tweepy
+requests
+pytz
