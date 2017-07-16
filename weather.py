@@ -44,9 +44,10 @@ def data_parsing(data):
     local_date = date.replace(tzinfo=pytz.utc).astimezone(local_tz)
     time = local_date.strftime("%H:%M")
     day = local_date.strftime("%a")
+    tm = int(time[0:2])
     
     # check if current time is 06:00 am
-    if time == "06:00":
+    if tm == 6:
         
         # fetch daily weather data for tweet
         d = date.strftime("%d.%m")
@@ -64,10 +65,10 @@ def data_parsing(data):
             status = "{}\n{}\n{}...{}\nВетра нет\nВлажность {}%".format(d, s, tMin, tMax, h)
    
     # check if current time is 12:00 pm or 6:00 pm
-    elif time == "12:00" or time == "18:00":
+    elif tm == 12 or tm == 18:
         
         # check if current weekday is Monday, Wednesday or Friday
-        if time == "12:00" and (day == "Mon" or day== "Wed" or day == "Fri"):
+        if tm == 12 and (day == "Mon" or day== "Wed" or day == "Fri"):
             status = data["daily"]["summary"]
         else:
             
