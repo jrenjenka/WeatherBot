@@ -4,7 +4,7 @@ import requests
 import datetime
 import pytz
 
-from config import WAPI_key
+# from config import WAPI_key
 
 def lookup():
     """Make HTTPS request for weather data"""

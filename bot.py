@@ -6,7 +6,7 @@ import tweepy
 import time
 
 # import dependencies
-from config import *
+# from config import *
 from weather import *
 
 # authorize twitter app
