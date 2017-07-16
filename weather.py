@@ -103,8 +103,12 @@ def data_parsing(data):
     datalist.append(status)
     
     # check if wind alert
+    wa = wind_alert(data["currently"]["windSpeed"], data["currently"]["windGust"])
+    if wa != None:
+        datalist.append(wa)
         # append wind alert status to newlist
-    
+        
+    # return list of statuses    
     return datalist
     
 # convert wind degree to direction
@@ -148,9 +152,36 @@ def degree_to_direction(degree):
     return None
 
 # check if there is strong wind
-def is_wind_alert(wind_speed, wind_gust):
+def wind_alert(wind_speed, wind_gust):
     """Return string with alert if there is strong wind"""
-    return
+    
+    if wind_speed == 0.0 or wind_speed == None:
+        return None
+        
+    alert = ""
+    
+    if wind_gust >= 25 and wind_speed < 10.7: 
+        alert = "шквалистый ветер" 
+        return "Будьте осторожны, {}, скорость {}м/c с порывами {}м/с".format(alert, wind_speed, wind_gust)
+    
+    if wind_speed < 10.7 and wind_gust < 25:
+        return None
+    elif wind_speed <= 13.8: 
+        alert = "усиление ветра в Москве"
+    elif wind_speed <= 17.1:
+        alert = "сильный ветер"
+    elif wind_speed <= 20.7:
+        alert = "очень сильный ветер"
+    elif wind_speed <= 24.4:
+        alert = "штормовой ветер"
+    elif wind_speed <= 28.4:
+        alert = "сильный штормовой ветер"
+    elif wind_speed <= 32.6:
+        alert = "очень сильный штормовой ветер"
+    else:
+        alert = "ураганный ветер"
+        
+    return "Будьте осторожны, {}, скорость {}м/c с порывами {}м/с".format(alert, wind_speed, wind_gust)
 
 # add temperature sign to degree
 def temp(t):
