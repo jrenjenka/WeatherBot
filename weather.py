@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
 import requests
 import datetime
 import pytz
@@ -9,9 +10,13 @@ import pytz
 def lookup():
     """Make HTTPS request for weather data"""
     
+    # ensure environment variables are set
+    if not os.environ.get("WAPI_key"):
+        raise RuntimeError("WAPI_key not set")
+    
     # make HTTPS request
     try:
-        url = "https://api.darksky.net/forecast/{}/55.75,37.62?lang=ru&units=si".format(WAPI_key)
+        url = "https://api.darksky.net/forecast/{}/55.75,37.62?lang=ru&units=si".format(os.environ.get("WAPI_key"))
         response = requests.get(url)
         if response.status_code == 200:
             json_data = response.json()

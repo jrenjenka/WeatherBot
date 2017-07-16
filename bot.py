@@ -4,17 +4,23 @@
 # import modules
 import tweepy
 import time
+import os
 
 # import dependencies
-# from config import *
 from weather import *
 
 # authorize twitter app
 def init():
     """Authorize twitter app using tweepy library"""
     
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
+    # ensure environment variables are set
+    if not os.environ.get("consumer_key"):
+        raise RuntimeError("consumer_key not set")
+    if not os.environ.get("consumer_secret"):
+        raise RuntimeError("consumer_secret not set")
+    
+    auth = tweepy.OAuthHandler(os.environ.get("consumer_key"), os.environ.get("consumer_secret"))
+    auth.set_access_token(os.environ.get("access_token"), os.environ.get("access_token_secret"))
     return tweepy.API(auth)
    
 def main():
