@@ -9,7 +9,7 @@ from config import WAPI_key
 def lookup():
     """Make HTTPS request for weather data"""
     
-    # make HTTP request
+    # make HTTPS request
     try:
         url = "https://api.darksky.net/forecast/{}/55.75,37.62?lang=ru&units=si".format(WAPI_key)
         response = requests.get(url)
@@ -39,10 +39,6 @@ def data_parsing(data):
     local_date = date.replace(tzinfo=pytz.utc).astimezone(local_tz)
     time = local_date.strftime("%H:%M")
     day = local_date.strftime("%a")
-    
-    #for test
-    #time = "12:00"
-    #day = "Tue"
     
     # check if current time is 06:00 am
     if time == "06:00":
@@ -105,8 +101,8 @@ def data_parsing(data):
     # check if wind alert
     wa = wind_alert(data["currently"]["windSpeed"], data["currently"]["windGust"])
     if wa != None:
-        datalist.append(wa)
         # append wind alert status to newlist
+        datalist.append(wa)
         
     # return list of statuses    
     return datalist
@@ -191,11 +187,3 @@ def temp(t):
     if t > 0:
         temp += "+"
     return temp + str(round(t))
-
-
-# for test
-l = lookup()
-
-for s in l:
-    print(s)
-    print(len(s))
