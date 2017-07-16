@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import requests
 import datetime
+import pytz
 
 from config import WAPI_key
 
@@ -32,12 +33,16 @@ def data_parsing(data):
     # fetch timestamp of current weather data and convert it to date
     timestamp = data["currently"]["time"]
     date = datetime.datetime.utcfromtimestamp(timestamp)
-    #time = date.strftime("%H:%M")
-    #day = date.strftime("%a")
     
-    # for test
-    time = "12:00"
-    day = "Tue"
+    # great thanks to solution of converting utc time to local time https://stackoverflow.com/posts/13287083/revisions
+    local_tz = pytz.timezone('Europe/Moscow')
+    local_date = date.replace(tzinfo=pytz.utc).astimezone(local_tz)
+    time = local_date.strftime("%H:%M")
+    day = local_date.strftime("%a")
+    
+    #for test
+    #time = "12:00"
+    #day = "Tue"
     
     # check if current time is 06:00 am
     if time == "06:00":
@@ -157,7 +162,7 @@ def temp(t):
     return temp + str(round(t))
 
 
-# test
+# for test
 l = lookup()
 
 for s in l:
