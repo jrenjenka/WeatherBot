@@ -7,6 +7,7 @@ import time
 
 # import dependencies
 from config import *
+from weather import *
 
 # authorize twitter app
 def init():
@@ -20,14 +21,13 @@ def main():
     
     while True:
         # lookup for tweets
-        #tweets = lookup()
-        tweets = ["test4", "test5"]
+        tweets = lookup()
         
         # update twitter's account status
-        for tweet in tweets:
-            try: api.update_status(tweet)
-            except tweepy.TweepError: print("ERROR: cannot get weather data")
-        
+        if tweets != None:
+            for tweet in tweets:
+                api.update_status(tweet)
+                
         # delay next tweet for 3 hours
         time.sleep(10800000)
 
