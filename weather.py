@@ -6,6 +6,8 @@ import datetime
 from config import WAPI_key
 
 def lookup():
+    """Make HTTPS request for weather data"""
+    
     # make HTTP request
     try:
         url = "https://api.darksky.net/forecast/{}/55.75,37.62?lang=ru&units=si".format(WAPI_key)
@@ -21,71 +23,134 @@ def lookup():
         return None
         
 def data_parsing(data):
-    newlist = []
+    """parse weather data and return list of statuses for bot"""
+    
+    # create new list for statuses
+    datalist = []
     status = ""
+    
+    # fetch timestamp of current weather data and convert it to date
     timestamp = data["currently"]["time"]
     date = datetime.datetime.utcfromtimestamp(timestamp)
-    
     #time = date.strftime("%H:%M")
     #day = date.strftime("%a")
-    time = "00:00"
-    day = "Mon"
     
+    # for test
+    time = "12:00"
+    day = "Tue"
     
     # check if current time is 06:00 am
     if time == "06:00":
-    
+        
+        # fetch daily weather data for tweet
         d = date.strftime("%d.%m")
-        hourly_summary = data["hourly"]["summary"]
+        s = data["hourly"]["summary"]
         tMin = temp(data["daily"]["data"][0]["temperatureMin"])
         tMax = temp(data["daily"]["data"][0]["temperatureMax"])
-        direction = "ЮЗЗ"#degree_to_direction(data["daily"]["data"][0]["windBearing"])
-        speed = data["daily"]["data"][0]["windSpeed"]
-        gust = data["daily"]["data"][0]["windGust"]
-        humidity = (int)(data["daily"]["data"][0]["humidity"] * 100)
-        status = "{}\n{}\n{}...{}\nВетер {} {}м/с, порывы {}м/с\nВлажность {}%".format(d, hourly_summary, tMin, tMax, direction, speed, gust, humidity)
+        ws = data["daily"]["data"][0]["windSpeed"]
+        h = (int)(data["daily"]["data"][0]["humidity"] * 100)
         
+        if ws != "0.0" or ws != None:
+            wd = degree_to_direction(data["daily"]["data"][0]["windBearing"])
+            wg = data["daily"]["data"][0]["windGust"]
+            status = "{}\n{}\n{}...{}\nВетер {} {}м/с, порывы {}м/с\nВлажность {}%".format(d, s, tMin, tMax, wd, ws, wg, h)
+        else: 
+            status = "{}\n{}\n{}...{}\nВетра нет\nВлажность {}%".format(d, s, tMin, tMax, h)
+   
     # check if current time is 12:00 pm or 6:00 pm
     elif time == "12:00" or time == "18:00":
+        
         # check if current weekday is Monday, Wednesday or Friday
         if time == "12:00" and (day == "Mon" or day== "Wed" or day == "Fri"):
             status = data["daily"]["summary"]
         else:
-            print("started")
-            t= temp(data["currently"]["temperature"])
-            hourly_summary = data["hourly"]["summary"].lower()
-            direction = "ЮЗЗ"#degree_to_direction(data["daily"]["data"][0]["windBearing"])
-            speed = data["currently"]["windSpeed"]
-            gust = data["currently"]["windGust"]
-            humidity = (int)(data["currently"]["humidity"] * 100)
             
-            status = "{}\n{}, {}\nВетер {} {}м/c, порывы {}м/с, влажность {}%".format(time, t, hourly_summary, direction, speed, gust, humidity)
+            # fetch hourly weather data for tweet
+            t= temp(data["currently"]["temperature"])
+            s = data["hourly"]["summary"].lower()
+            ws = data["currently"]["windSpeed"]
+            h = (int)(data["currently"]["humidity"] * 100)
+            
+            if ws != "0.0" or ws != None:
+                wd = degree_to_direction(data["currently"]["windBearing"])
+                wg = data["currently"]["windGust"]
+                status = "{}\n{}, {}\nВетер {} {}м/c, порывы {}м/с, влажность {}%".format(time, t, s, wd, ws, wg, h)
+            else: 
+                status = "{}\n{}, {}\nВетра нет, влажность {}%".format(time, t, s, h)
+            
     else:
-        summary = data["currently"]["summary"]
-        summary = summary[0] + summary[1:].lower()
+        # fetch currently weather data for tweet
+        s = data["currently"]["summary"]
+        s = s[0] + s[1:].lower()
         t= temp(data["currently"]["temperature"])
         tAp = temp(data["currently"]["apparentTemperature"])
-        direction = "ЮЗЗ"#degree_to_direction(data["daily"]["data"][0]["windBearing"])
-        speed = data["currently"]["windSpeed"]
-        gust = data["currently"]["windGust"]
-        humidity = (int)(data["currently"]["humidity"] * 100)
-        status = "{}\n{}, {}, ощущается как {}, ветер {} {}м/с, порывы {}м/с, влажность {}%".format(time, summary, t, tAp, direction, speed, gust, humidity)
-    
-    # append status to newlist
-    newlist.append(status)
+        ws = data["currently"]["windSpeed"]
+        h = (int)(data["currently"]["humidity"] * 100)
+        
+        if ws != "0.0" or ws != None:
+            wd = degree_to_direction(data["currently"]["windBearing"])
+            wg = data["currently"]["windGust"]
+            status = "{}\n{}, {}, ощущается как {}, ветер {} {}м/с, порывы {}м/с, влажность {}%".format(time, s, t, tAp, wd, ws, wg, h)
+        else: 
+            status = "{}\n{}, {}, ощущается как {}, ветра нет, влажность {}%".format(time, s, t, tAp, h)
+            
+    # append status to datalist
+    datalist.append(status)
     
     # check if wind alert
         # append wind alert status to newlist
     
-    return newlist
+    return datalist
+    
+# convert wind degree to direction
+def degree_to_direction(degree):
+    """Return wind direction"""
+    
+    if degree != None:
+        if degree >= 348.75 or degree <= 11.25:
+            return "С"
+        elif degree <= 33.75:
+            return "ССВ"
+        elif degree <= 56.25:
+            return "СВ"
+        elif degree <= 78.75:
+            return "ВСВ"
+        elif degree <= 101.25:
+            return "В"
+        elif degree <= 123.75:
+            return "ВЮВ"
+        elif degree <= 146.25:
+            return "ЮВ"
+        elif degree <= 168.75:
+            return "ЮЮВ"
+        elif degree <= 191.25:
+            return "Ю"
+        elif degree <= 213.75:
+            return "ЮЮЗ"
+        elif degree <= 236.25:
+            return "ЮЗ"
+        elif degree <= 258.75:
+            return "ЗЮЗ"
+        elif degree <= 281.25:
+            return "З"
+        elif degree <= 303.75:
+            return "ЗСЗ"
+        elif degree <= 326.25:
+            return "СЗ"
+        elif degree > 326.25:
+            return "ССЗ"
         
-def degree_to_direction():
-    return
+    return None
 
+# check if there is strong wind
 def is_wind_alert(wind_speed, wind_gust):
+    """Return string with alert if there is strong wind"""
     return
 
+# add temperature sign to degree
 def temp(t):
+    """convert float to string and add sign to temperature degree"""
+    
     temp = ""
     if t > 0:
         temp += "+"

@@ -11,12 +11,16 @@ from weather import *
 
 # authorize twitter app
 def init():
+    """Authorize twitter app using tweepy library"""
     
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     return tweepy.API(auth)
    
 def main():
+    """Run bot"""
+    
+    # initialize bot
     api = init()
     
     while True:
