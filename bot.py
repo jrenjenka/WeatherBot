@@ -39,7 +39,7 @@ def main():
                 api.update_status(tweet)
                 
         # delay next tweet for 3 hours
-        time.sleep(10800000)
+        time.sleep(10800)
 
 if __name__ == "__main__":
     main()
