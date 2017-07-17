@@ -155,7 +155,7 @@ def degree_to_direction(degree):
 
 # check if there is strong wind
 def wind_alert(wind_speed, wind_gust):
-    """Return string with alert if there is strong wind"""
+    """Return string with alert if there are severe wind conditions based on The Beaufort scale"""
     
     if wind_speed == 0.0 or wind_speed == None:
         return None
