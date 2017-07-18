@@ -102,7 +102,12 @@ def data_parsing(data):
             status = "{}\n{}, {}, ощущается как {}, ветра нет, влажность {}%".format(time, s, t, tAp, h)
             
     # append status to datalist
-    datalist.append(status)
+    if len(status) > 140:
+        i = status.find(".") + 1
+        datalist.append(status[:i])
+        datalist.append(status[i:])
+    else:
+        datalist.append(status)
     
     # check if wind alert
     wa = wind_alert(data["currently"]["windSpeed"], data["currently"]["windGust"])
