@@ -1,5 +1,5 @@
 # WeatherBot
-Weather Bot for Twitter 
+Weather Bot for Twitter. This is the final project for the CS50 Introduction to Computer Science course from Harvard.
 
 Twitter bot made with python3 and tweepy to tweet about weather in Moscow Russia
 
